@@ -1,4 +1,5 @@
 # различные вспомогательные функции
+import naming
 from datetime import date
 from hashlib import sha256
 from random import randint, choice
@@ -11,39 +12,15 @@ def hash_it(secret: str):
     return hex_dig
 
 
-def get_next_char():
-    """
-    Генератор следующего символа для создания случайных имен
-    Выдает гласную после согласной и наоборот в 80% случаев
-    :return:
-    """
-    first = 'aeiou'
-    second = 'bcdfghjklmnpqrstvwxyz'
-
-    if choice([True, False]):
-        first, second = second, first
-
-    while True:
-        yield choice(first)
-        if choice((True, True, True, True, False)):
-            first, second = second, first
-
-
-# Создание генератора
-next_char = get_next_char()
-
-
-def get_random_name(min_chars=3, max_chars=9):
-    """
-    Генерация случайного человекоподобного имени из комбинации чередующихся гласных и согласных букв
-    :param min_chars: минимальная длина имени
-    :param max_chars: максимальная длина имени
-    :return: строка с именем с большой буквы
-    """
-    name = ''.join([
-        next(next_char) for i in range(randint(min_chars, max_chars))
-    ])
-    return name.capitalize()
+def cyrillic_to_latin(text: str):
+    pairs = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
+        'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+        'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
+        'э': 'e', 'ю': 'yu', 'я': 'ya'
+    }
+    latin = ''.join(pairs.get(char, char) for char in text)
+    return latin
 
 
 def get_initial_tables(status_constants: dict):
@@ -95,25 +72,31 @@ def get_initial_data(status_constants, lim: int = 10):
     :return: 2 кортежа с демо-данными
     """
     # отдельно генерация менеджеров
-    managers = [{'fio': f'{get_random_name(3, 6)} {get_random_name(5, 10)}'} for _ in range(1, 4)]
+    # managers = [{'fio': f'{get_random_name(3, 6)} {get_random_name(5, 10)}'} for _ in range(1, 4)]
+    managers = [{'fio': naming.make_fio().to_string()} for _ in range(1, 4)]
 
     # Генерация данных для таблицы с менеджерами
     managers_data = [
         (
-            manager['fio'],                                             # manager_fio
-            f"aton.{manager['fio'].split()[1]}",     # login
-            hash_it('admin')                                            # password (хэш)
+            manager['fio'],                                            # manager_fio
+            # f"{manager['fio'].split()[1]}",                          # login
+            cyrillic_to_latin(manger_fio),                             # login
+            hash_it('admin')                                           # password (хэш)
         )
         for manager in managers
+        for manger_fio in ['.'.join(manager['fio'].split()[:2]).lower()]
     ]
 
     # Генерация данных для таблицы с клиентами
     customers_data = [
         (
             randint(10**8, 10**9),                                      # account_id
-            get_random_name(5, 10),                                     # last_name
-            get_random_name(3, 6),                                      # first_name
-            get_random_name(3, 6),                                      # middle_name
+            # get_random_name(5, 10),                                   # last_name
+            # get_random_name(3, 6),                                    # first_name
+            # get_random_name(3, 6),                                    # middle_name
+            fio.last_name,                                              # last_name
+            fio.first_name,                                             # first_name
+            fio.middle_name,                                            # middle_name
             date(randint(1950, 2005), randint(1, 12), randint(1, 28)),  # birth
             randint(10**11, 10**12),                                    # taxpayer_id
             manager['fio'],                                             # manager_fio
@@ -122,6 +105,7 @@ def get_initial_data(status_constants, lim: int = 10):
         )
         for manager in managers
         for _ in range(randint(3, lim))
+        for fio in [naming.make_fio()]
     ]
     #
     return managers_data, customers_data

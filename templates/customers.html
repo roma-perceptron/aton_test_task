@@ -1,9 +1,10 @@
 {% extends "index.html" %}
 
 {% block content %}
+
 <div class="container text-center col-10 mt-5">
     <div class="text-start">
-        <h1 class="display-6">Все клиенты <em>{{customers.1.manager_fio}}</em>
+        <h1 id="manager_fio" class="display-6"><em>{{customers.1.manager_fio}}</em>
             <span><a id='logout_link' href="/logout" class="btn btn-link"><-- выйти</a></span>
         </h1>
     </div>

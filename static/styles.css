@@ -20,10 +20,15 @@ div .manager_login:hover {
     cursor: pointer;
 }
 
+.toast {
+    z-index: 99999;
+}
+
 #logout_link {
     text-decoration: none;
 }
 
-.toast {
-    z-index: 99999;
+#manager_fio {
+    margin-top: 80px;
 }
+

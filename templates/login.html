@@ -28,7 +28,7 @@
             <button type="submit" class="btn btn-primary">Войти</button>
         </div>
     </form>
-    <div class="row col-4">
+    <div class="row col-6">
         {% for manager in managers %}
         <div id="{{manager.login}}" class="col manager_login rounded-3 text-center" onclick="set_auth_params(this, login_form);"><em>{{manager.login}}</em></div>
         {% endfor %}
