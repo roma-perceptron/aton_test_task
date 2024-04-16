@@ -1,0 +1,29 @@
+/* styles */
+
+
+body .process {
+    cursor: wait!important;
+}
+
+select[aria-label="В работе"] {
+    background-color: var(--bs-primary-bg-subtle)!important;
+}
+select[aria-label="Отказ"] {
+    background-color: var(--bs-danger-bg-subtle)!important;
+}
+select[aria-label="Сделка закрыта"] {
+    background-color: var(--bs-success-bg-subtle)!important;
+}
+
+div .manager_login:hover {
+    background-color: var(--bs-primary-bg-subtle)!important;
+    cursor: pointer;
+}
+
+#logout_link {
+    text-decoration: none;
+}
+
+.toast {
+    z-index: 99999;
+}

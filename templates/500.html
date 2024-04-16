@@ -1,0 +1,23 @@
+{% extends "index.html" %}
+
+{% block header %}
+<header class="header fixed-top bg-light text-body-tertiary text-center py-1">
+    <h1 class="display-6">Error 500: Виртуальная машина сломалась..</h1>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="container flex-column d-flex justify-content-center align-items-center vh-100">
+    <div class="col-4 mb-5">
+        <img src="https://assets.dochipo.com/editor/animations/404-error/36342188-38b5-4d0e-b134-e713b9027592.gif"
+             title="500 Internal Server Error"
+        >
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer class="footer fixed-bottom bg-light text-center py-1">
+    <em>Скорее всего сервер БД (clever-cloud.com) временно не отвечает</em>
+</footer>
+{% endblock %}

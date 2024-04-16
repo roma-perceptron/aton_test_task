@@ -1,0 +1,8 @@
+database:
+  host: bq6rcjpe5l39fl9x0emy-mysql.services.clever-cloud.com
+  port: 3306
+  user: uwejg6fikc6wqsbr
+  password: virm4JS7u4660i8DtbLk
+  database: bq6rcjpe5l39fl9x0emy
+session:
+  key: Dfxas5iCkYtN3DqXdidYK1BvxTrQuQSyudA4Tl4bE39my0jc0=
