@@ -1,0 +1,51 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container flex-column d-flex justify-content-center align-items-center vh-100">
+    <form method="post" class="col-4 bg-primary-subtle rounded-3 mb-5" id="login_form" onsubmit="$('#loadingModal').modal('show')">
+        {% if error_message %}
+        <div class="row text-center my-3 text-danger">
+            <span>{{error_message}}</span>
+        </div>
+        {% endif %}
+        <div class="row text-end my-3">
+            <div class="col-4">
+                <label for="inputLogin" class="form-label">Логин</label>
+            </div>
+            <div class="col-6">
+                <input type="text" class="form-control" id="inputLogin" name="login" required>
+            </div>
+        </div>
+        <div class="row text-end my-3">
+            <div class="col-4">
+                <label for="inputPassword" class="form-label">Пароль</label>
+            </div>
+            <div class="col-6">
+                <input type="password" class="form-control" id="inputPassword" name="password" required>
+            </div>
+        </div>
+        <div class="col text-center my-3">
+            <button type="submit" class="btn btn-primary">Войти</button>
+        </div>
+    </form>
+    <div class="row col-4">
+        {% for manager in managers %}
+        <div id="{{manager.login}}" class="col manager_login rounded-3 text-center" onclick="set_auth_params(this, login_form);"><em>{{manager.login}}</em></div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content d-flex justify-content-center align-items-center bg-transparent border-0">
+      <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Загрузка...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+

@@ -1,0 +1,68 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container text-center col-10 mt-5">
+    <div class="text-start">
+        <h1 class="display-6">Все клиенты <em>{{customers.1.manager_fio}}</em>
+            <span><a id='logout_link' href="/logout" class="btn btn-link"><-- выйти</a></span>
+        </h1>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Номер счета</th>
+          <th scope="col">Фамилия</th>
+          <th scope="col">Имя</th>
+          <th scope="col">Отчество</th>
+          <th scope="col">Дата рождения</th>
+          <th scope="col">ИНН</th>
+          <th scope="col">Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+        <tr>
+          <th scope="row">{{ loop.index }}</th>
+          <td>{{customer.account_id}}</td>
+          <td>{{customer.last_name}}</td>
+          <td>{{customer.first_name}}</td>
+          <td>{{customer.middle_name}}</td>
+          <td>{{customer.birth}}</td>
+          <td>{{customer.taxpayer_id}}</td>
+          <td>
+            <select id="{{customer.customer_id}}" class="form-select" aria-label="{{customer.status}}">
+                {% for status, text in status_constants.items() %}
+                <option {% if customer.status == text %} selected {% endif %} value="{{status}}">{{text}}</option>
+                {% endfor %}
+            </select>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content d-flex justify-content-center align-items-center bg-transparent border-0">
+      <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Загрузка...</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block toast %}
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body">
+          Ошибка при обращении к базе данных..
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+{% endblock %}
