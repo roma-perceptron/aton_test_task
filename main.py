@@ -37,6 +37,6 @@ def setup_app():
 
 
 if __name__ == '__main__':
-    print('New Version 1.7')
+    print('New Version 1.8')
     flask_app = setup_app()
     flask_app.run(host='0.0.0.0', port=5000)

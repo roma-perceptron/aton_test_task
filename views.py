@@ -72,6 +72,7 @@ def customers(app: Application):
     if session:
         cur_customers = app.manager.get_customers(manager_fio=session['manager_fio'])
         context = {
+            'manager_fio': session['manager_fio'],
             'customers': cur_customers,
             'status_constants': app.manager.status_constants
         }

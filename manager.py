@@ -101,27 +101,34 @@ class BaseManager:
             #
             self.connection.commit()
 
-    def write_to_db(self, query: str, params: Union[None, list] = None):
+    def write_to_db__many(self, query: str, params: Union[None, list] = None):
+        """
+        Выполнение SQL для массовой записи строк
+        :param query: Строка со SQL-запросом
+        :param params: Параметры для массовой записи
+        """
+        self.check_connections()
+        self.cursor.executemany(query, params)
+
+    def write_to_db(self, query: str, params: Union[None, list, tuple] = None):
         """
         Выполнение SQL запроса и закрепление результата
         :param query: Строка со SQL-запросом
-        :param params: Параметры для массовой записи (опционально)
+        :param params: Параметры (опционально)
         """
         self.check_connections()
-        if params:
-            self.cursor.executemany(query, params)
-        else:
-            self.cursor.execute(query)
+        self.cursor.execute(query, params)
         self.connection.commit()
 
-    def read_from_db(self, query: str):
+    def read_from_db(self, query: str, params: Union[None, list, tuple] = None):
         """
         Выполнение SQL запроса на выборку и возврат этих значений
         :param query: Строка со SQL-запросом
-        :return: спиоск словарей с полученными данными в формает column:value
+        :param params: Параметры запроса (при наличии)
+        :return: список словарей с полученными данными в формате column:value
         """
         self.check_connections()
-        self.cursor.execute(query)
+        self.cursor.execute(query, params)
         columns = [column[0] for column in self.cursor.description]
         data = self.cursor.fetchall()
         if data:
@@ -136,7 +143,7 @@ class BaseManager:
                                        utils.get_sql_for_insert_rows(),
                                        utils.get_initial_data(self.status_constants)):
             self.write_to_db(table)
-            self.write_to_db(insert, data)
+            self.write_to_db__many(insert, data)
         self.get_tables()
 
 
@@ -147,22 +154,26 @@ class Manager(BaseManager):
 
     def get_customers(self, manager_fio: str = None):
         """ Выборка клиентов заданного менеджера / всех клиентов """
-        query = f"""
-            SELECT * FROM customers
-            {"WHERE manager_fio = '" + manager_fio + "'" if manager_fio else ""}
-        """
-        data = self.read_from_db(query)
+        if manager_fio:
+            query = """
+                SELECT * FROM customers
+                WHERE manager_fio = %s
+            """
+            data = self.read_from_db(query, (manager_fio,))
+        else:
+            query = "SELECT * FROM customers"
+            data = self.read_from_db(query)
         return data
 
     def update_status(self, customer_id, status):
         """ Перезапись значения статуса """
-        query = f"""
+        query = """
             UPDATE customers
-            SET status = '{self.status_constants[status]}'
-            WHERE customer_id = {customer_id}
+            SET status = %s
+            WHERE customer_id = %s
         """
         try:
-            self.write_to_db(query)
+            self.write_to_db(query, (self.status_constants[status], customer_id))
         except mysql.connector.errors.DatabaseError:
             return {'ok': False}
         return {'ok': True, 'status_rus': self.status_constants[status]}
@@ -175,12 +186,12 @@ class Manager(BaseManager):
 
     def authentication(self, login, password):
         """ Аутентификация по логину и паролю"""
-        query = f"""
-            SELECT * FROM  managers
-            WHERE login = '{login}'
-            AND password = '{password}'
+        query = """
+            SELECT * FROM managers
+            WHERE login = %s
+            AND password = %s
         """
-        user = self.read_from_db(query)
+        user = self.read_from_db(query, (login, password))
         if user:
             return user[0]
         else:
