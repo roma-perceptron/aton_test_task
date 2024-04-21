@@ -32,8 +32,8 @@ def get_initial_tables(status_constants: dict):
     managers_table = """
         CREATE TABLE IF NOT EXISTS managers (
             manager_id INT AUTO_INCREMENT PRIMARY KEY,
-            manager_fio VARCHAR(32) UNIQUE,
-            login VARCHAR(32),
+            manager_fio VARCHAR(64) UNIQUE,
+            login VARCHAR(64),
             password VARCHAR(128)
         )
     """
@@ -47,7 +47,7 @@ def get_initial_tables(status_constants: dict):
             middle_name VARCHAR(32),
             birth DATE,
             taxpayer_id BIGINT UNSIGNED,
-            manager_fio VARCHAR(32),
+            manager_fio VARCHAR(64),
             status ENUM{tuple(status_constants.values())},
             FOREIGN KEY (manager_fio) REFERENCES managers(manager_fio)
         )
